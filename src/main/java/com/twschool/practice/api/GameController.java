@@ -1,6 +1,8 @@
 package com.twschool.practice.api;
 
 import com.twschool.practice.domain.AnswerGenerator;
+import com.twschool.practice.domain.GameScore;
+import com.twschool.practice.domain.GameStatus;
 import com.twschool.practice.domain.GuessNumberGame;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,9 +20,11 @@ public class GameController {
         GuessNumberGame guessNumberGame=guessRepostory.find();
         GuessService guessService=new GuessService(guessNumberGame);
         String result=guessService.guess(requestBody.get("number"));
+        GameScore.calcscore(requestBody.get("username"),guessNumberGame.getStatus());
         Map<String, String> responseBody=new HashMap<String, String>();
-        responseBody.put("input",requestBody.get("number"));
-        responseBody.put("result",result);
+        responseBody.put("number",requestBody.get("number"));
+        responseBody.put("username",requestBody.get("username"));
+        responseBody.put("score",""+GameScore.getScore(requestBody.get("username")));
         return  responseBody;
     }
 }
